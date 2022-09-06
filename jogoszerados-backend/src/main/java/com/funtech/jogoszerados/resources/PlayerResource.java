@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.funtech.jogoszerados.domain.Player;
 import com.funtech.jogoszerados.domain.dtos.PlayerDTO;
 import com.funtech.jogoszerados.services.PlayerService;
+import com.funtech.jogoszerados.services.exceptions.ObjectNotFoundException;
 
 @RestController
 @RequestMapping(value = "/players")
@@ -33,6 +34,9 @@ public class PlayerResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<PlayerDTO> findById(@PathVariable Integer id) {
 		Player obj = service.findById(id);
+		if (obj == null) {
+			throw new ObjectNotFoundException("Jogador não encontrado: " + id);
+		}
 		return ResponseEntity.ok().body(new PlayerDTO(obj));
 	}
 

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.funtech.jogoszerados.domain.Player;
@@ -20,9 +21,15 @@ public class PlayerService {
 	@Autowired
 	private PlayerRepository repository;
 
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+	
 	public Player findById(Integer id) {
 		Optional<Player> obj = repository.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException("Jogador não encontrado! ID: " + id));
+		if (obj.get().getIsActive() == true) {
+			return obj.orElseThrow(() -> new ObjectNotFoundException("Jogador não encontrado! ID: " + id));
+		}
+		return null;
 	}
 
 	public List<Player> findAll() {
@@ -32,8 +39,8 @@ public class PlayerService {
 	public Player create(PlayerDTO objDTO) {
 		checkEmail(objDTO);
 		objDTO.setId(null);
-
 		Player p = new Player(objDTO);
+		p.setSenha(encoder.encode(objDTO.getSenha()));
 		return repository.save(p);
 	}
 

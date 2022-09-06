@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.funtech.jogoszerados.domain.Jogo;
@@ -21,12 +22,15 @@ public class DBService {
 
 	@Autowired
 	private JogoRepository jogoRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 
 	public void instanciaDB() {
 
-		Player player = new Player(null, "Rafael", "rafael@rafael.com", "123");
-		Player player2 = new Player(null, "Andressa", "andressa@andressa.com", "321");
-		Player player3 = new Player(null, "Miguel", "miguel@miguel.com", "213");
+		Player player = new Player(null, "Rafael", "rafael@rafael.com",  encoder.encode("123"));
+		Player player2 = new Player(null, "Andressa", "andressa@andressa.com", encoder.encode("123"));
+		Player player3 = new Player(null, "Miguel", "miguel@miguel.com", encoder.encode("123"));
 
 		Jogo jogo = new Jogo(null, "Crash Bandicoot 3", "PSX", Status.PLATINADO, null, player);
 		Jogo jogo2 = new Jogo(null, "Crash Bandicoot 2", "PSX", Status.TERMINADO, null, player2);
